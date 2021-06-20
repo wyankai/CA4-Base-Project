@@ -1,43 +1,53 @@
 /******************************************************************************
-Author: Elyas Chua-Aziz
+Author: Syakir(S10204929) and Yankai(S10206089)
+[Adapted from Mr Elyas's Script]
 
 Name of Class: DemoPlayer
 
 Description of Class: This class will control the movement and actions of a 
                         player avatar based on user input.
 
-Date Created: 09/06/2021
+Date Created: 20/06/2021
 ******************************************************************************/
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SamplePlayer : MonoBehaviour
+public class Player : MonoBehaviour
 {
+    [SerializeField]
+    private Rigidbody myRigidbody;
+
     /// <summary>
     /// The distance this player will travel per second.
     /// </summary>
     [SerializeField]
     private float moveSpeed;
 
+    /// <summary>
+    /// Speed of Camera Rotation.
+    /// </summary>
     [SerializeField]
     private float rotationSpeed;
 
+
     /// <summary>
     /// The camera attached to the player model.
-    /// Should be dragged in from Inspector.
     /// </summary>
+    [SerializeField]
     private Camera playerCamera;
 
+    [SerializeField]
     private string currentState;
 
+    [SerializeField]
     private string nextState;
 
     // Start is called before the first frame update
     void Start()
     {
-        nextState = "Idling";
+        nextState = "Idle";
     }
 
     // Update is called once per frame
@@ -59,10 +69,54 @@ public class SamplePlayer : MonoBehaviour
     {
         StopCoroutine(currentState);
 
-        currenState = nextState;
+        currentState = nextState;
         StartCoroutine(currentState);
     }
 
+    /// <summary>
+    /// Checks and handles rotation of the camera and player
+    /// </summary>
+    private void CheckRotation()
+    {
+        Vector3 playerRotation = transform.rotation.eulerAngles;
+        playerRotation.y += Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+
+        transform.rotation = Quaternion.Euler(playerRotation);
+
+        Vector3 cameraRotation = playerCamera.transform.rotation.eulerAngles;
+        cameraRotation.x -= Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+
+        playerCamera.transform.rotation = Quaternion.Euler(cameraRotation);
+    }
+
+    /// <summary>
+    /// Checks and handles movement of the player
+    /// </summary>
+    /// <returns>True if user input is detected and player is moved.</returns>
+    private bool CheckMovement()
+    {
+        Vector3 newPos = transform.position;
+
+        Vector3 xMovement = transform.right * Input.GetAxis("Horizontal");
+        Vector3 zMovement = transform.forward * Input.GetAxis("Vertical");
+
+        Vector3 movementVector = xMovement + zMovement;
+
+        if (movementVector.sqrMagnitude > 0)
+        {
+            movementVector *= moveSpeed * Time.deltaTime;
+            newPos += movementVector;
+
+            transform.position = newPos;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //Idle State
     private IEnumerator Idle()
     {
         while(currentState == "Idle")
@@ -75,6 +129,7 @@ public class SamplePlayer : MonoBehaviour
         }
     }
 
+    //Moving State
     private IEnumerator Moving()
     {
         while (currentState == "Moving")
@@ -83,50 +138,8 @@ public class SamplePlayer : MonoBehaviour
             {
                 nextState = "Idle";
             }
+
             yield return null;
         }
-        }
-    }
-
-    private void CheckRotation()
-    {
-        Vector3 playerRotation = transform.rotation.eulerAngles;
-        playerRotation.y = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
-
-        transform.rotation = Quaternion.Euler(playerRotation);
-
-        Vector3 cameraRotation = playerCamera.transform.rotation.eulerAngles;
-        cameraRotation.x += Input.GetAxis("Mouse Y") * rotatingSpeed * Time.deltaTime;
-
-        playerCamera.transform.rotation = Quaternion.Euler(cameraRotation);
-    }
-
-    /// <summary>
-    /// Checks and handles movement of the player
-    /// </summary>
-    /// <returns>True if user input is detected and player is moved.</returns>
-    private bool CheckMovement()
-    {
-        return false;
-        Vector3 newPos = transform.position;
-
-        Vector3 xMovement = transform.right * Input.GetAxis("Horizontal");
-        Vector3 zMovement = transform.forward * Input.GetAxis("Vertical");
-
-        Vector3 movementVector = xMovement + zMovement;
-
-        if(movementVector.sqrMagnitude > 0)
-        {
-            movementVector *= moveSpeed * Time.deltaTime;
-            newPos += movementVector;
-
-            transform.position = newPos;
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-
     }
 }
