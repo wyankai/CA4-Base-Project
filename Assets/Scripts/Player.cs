@@ -29,7 +29,9 @@ public class Player : MonoBehaviour
     /// Speed of Camera Rotation.
     /// </summary>
     [SerializeField]
-    private float rotationSpeed;
+    private float rotationSpeedX;
+    [SerializeField]
+    private float rotationSpeedY;
 
 
     /// <summary>
@@ -81,12 +83,12 @@ public class Player : MonoBehaviour
     private void CheckRotation()
     {
         Vector3 playerRotation = transform.rotation.eulerAngles;
-        playerRotation.y += Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+        playerRotation.y += Input.GetAxis("Mouse Y") * rotationSpeedY * Time.deltaTime;
 
         transform.rotation = Quaternion.Euler(playerRotation);
 
         Vector3 cameraRotation = playerCamera.transform.rotation.eulerAngles;
-        cameraRotation.x -= Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+        cameraRotation.x -= Input.GetAxis("Mouse X") * rotationSpeedX * Time.deltaTime;
 
         playerCamera.transform.rotation = Quaternion.Euler(cameraRotation);
     }
