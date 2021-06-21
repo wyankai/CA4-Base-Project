@@ -38,9 +38,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Camera playerCamera;
 
+    /// <summary>
+    /// This is for us to check the state while debugging
+    /// </summary>
     [SerializeField]
     private string currentState;
-
     [SerializeField]
     private string nextState;
 
@@ -121,7 +123,7 @@ public class Player : MonoBehaviour
     {
         while(currentState == "Idle")
         {
-            if(Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") != 0)
+            if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
                 nextState = "Moving";
             }
