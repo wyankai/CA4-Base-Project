@@ -29,9 +29,9 @@ public class Player : MonoBehaviour
     /// Speed of Camera Rotation.
     /// </summary>
     [SerializeField]
-    private float rotationSpeedX;
+    private float rotationSpeedX = 100;
     [SerializeField]
-    private float rotationSpeedY;
+    private float rotationSpeedY = 100;
 
 
     /// <summary>
